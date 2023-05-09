@@ -17,16 +17,27 @@ use Illuminate\Support\Facades\Route;
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
+
     $api->group(['prefix' => 'auth','namespace' => 'App\Http\Controllers\Api'], function ($api) {
        $api->post('login',  'AuthApiController@login')->name('login');
        $api->post('logout',  'AuthApiController@logout');
        $api->post('refresh_token',  'AuthApiController@refresh');
        $api->post('me',  'AuthApiController@me');
        $api->post('verify_token',  'AuthApiController@verify_token');
+       
      });
 
+
+      $api->group(['prefix' => 'iklan','namespace' => 'App\Http\Controllers\Api'], function ($api){
+            $api->get('loadkonten_square', 'kontenController@loadkonten_square');
+             $api->get('loadkonten_banner', 'kontenController@loadkonten_banner');
+      });
+
+
     $api->group(['middleware' => 'auth:api','namespace' => 'App\Http\Controllers\Api\V1'], function ($api) {
+
         $api->post('loadtoko', 'HomeApiController@loadtoko');
+        
 
         $api->group(['prefix' => 'user'], function ($api) {
             ////////USER TOKO-----------------------------
@@ -104,6 +115,34 @@ $api->version('v1', function ($api) {
             $api->post('reversal', 'LaporanApiController@LaporanReversal');
             
         });
+
+         $api->group(['prefix' => 'pelanggan'], function ($api) {
+         ////////PELANGGAN-----------------------------
+         $api->post('data', 'pelangganController@pelanggan_all');
+         $api->post('tambah', 'pelangganController@tambah_pelanggan');
+         $api->post('edit', 'pelangganController@edit_pelanggan');
+         $api->post('hapus', 'pelangganController@hapus_pelanggan');
+
+         });
+
+
+
+          $api->group(['prefix' => 'hutang'], function ($api) {
+          ////////HUTANG-----------------------------
+          $api->post('data', 'hutangController@hutang_all');
+          $api->post('tambah', 'hutangController@tambah_hutang');
+          $api->post('bayar', 'hutangController@bayar_hutang');
+        //   $api->post('hapus', 'pelangganController@hapus_pelanggan');
+
+          });
+
+
+           $api->group(['prefix' => 'hutang_detail'], function ($api) {
+           ////////HUTANG-----------------------------
+           $api->post('data', 'hutang_detailController@hutang_detail_all');
+          
+
+           });
     });
 
     
