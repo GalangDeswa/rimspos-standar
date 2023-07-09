@@ -72,13 +72,13 @@ class hutangController extends Controller
 
         ->with('penjualan')
 
-        ->orderBy('tgl_hutang','ASC')
+        ->orderBy('tgl_hutang','DESC')->get();
 
-        ->paginate(10);
+       
 
-        if(count($hutang) > 0){
+        if($hutang){
 
-            $hutangrow = $hutang->getCollection();
+       
 
             $success = true;
 
@@ -88,11 +88,11 @@ class hutangController extends Controller
 
             $respone = fractal()
 
-            ->collection($hutangrow, new HutangTransformer, 'data')
+            ->collection($hutang, new HutangTransformer, 'data')
 
             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-            ->paginateWith(new IlluminatePaginatorAdapter($hutang))
+        
 
             ->addMeta([
 
@@ -108,7 +108,7 @@ class hutangController extends Controller
 
     }else{
 
-       $hutangrow = $hutang->getCollection();
+     
 
         $success = false;
 
@@ -118,11 +118,11 @@ class hutangController extends Controller
 
         $respone = fractal()
 
-        ->collection($hutangrow, new hutangTransformer, 'data')
+        ->collection($hutang, new hutangTransformer, 'data')
 
         ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-        ->paginateWith(new IlluminatePaginatorAdapter($hutang))
+      
 
         ->addMeta([
 
@@ -293,6 +293,10 @@ class hutangController extends Controller
 
 
  public function bayar_hutang(Request $request){
+
+
+
+
 
      try {
 
@@ -491,4 +495,213 @@ class hutangController extends Controller
 
 
      }
+
+
+
+public function hutang_local_to_database(Request $request){
+
+            try {
+
+                    $validator = Validator::make($request->all(),
+
+                    array(
+
+
+
+                    'id_toko' => 'required|int',
+
+
+
+                    )
+
+                    );
+
+            if ($validator->fails()) {
+
+                    $error_messages = $validator->messages()->all();
+
+                    $status_code = 422;
+
+                    $response = fractal()
+
+                    ->item($error_messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 422);
+
+
+
+            }else{
+
+
+
+                    $cektoko = Toko::where('id',$request->id_toko)->first();
+
+                    if($cektoko){
+
+
+                    $id = $request->id_local;
+
+                    $id_toko = $request->id_toko;
+
+                    $id_pelanggan= $request->id_pelanggan;
+
+                    $hutang = $request->hutang;
+
+                    $tgl_hutang = $request->tgl_hutang;
+
+                    $status = $request->status;
+
+                    $aktif = $request->aktif;
+
+                 
+
+
+
+                    $checkid = hutang::where('id_local',$request->id_local)
+                    ->where('id_toko',$request->id_toko)
+
+                    ->first();
+
+            if($checkid == null){
+
+                    $data = new hutang();
+                    $data->id_local = $id;
+
+                    $data->id_toko = $id_toko;
+                    $data->id_pelanggan = $id_pelanggan;
+                    $data->hutang = $hutang;
+                    $data->tgl_hutang = $tgl_hutang;
+                    $data->status = $status;
+                    $data->aktif = $aktif;
+                
+
+            if($data->save()){
+
+                    $messages = 'Data hutang Berhasil Ditambah';
+
+                    $respone = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new SuccessTransformer)
+
+                    ->serializeWith(new ArraySerializer)
+
+                    ->toArray();
+
+                    return response()->json($respone, 200);
+
+            }else{
+
+                    $messages = 'Tambah hutang tidak berhasil, silahkan coba kembali!';
+
+                    $status_code = 401;
+
+                    $response = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 401);
+
+            }
+
+            }else{
+
+                    $data = hutang::where('id_local',$request->id_local)->where('id_toko',$request->id_toko)->first();
+
+                    $data->id_toko = $id_toko;
+                    $data->id_pelanggan = $id_pelanggan;
+                    $data->hutang = $hutang;
+                    $data->tgl_hutang = $tgl_hutang;
+                    $data->status = $status;
+                    $data->aktif = $aktif;
+
+                    if($data->save()){
+
+                    $messages = 'Data hutang Berhasil Diupdate';
+
+                    $respone = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new SuccessTransformer)
+
+                    ->serializeWith(new ArraySerializer)
+
+                    ->toArray();
+
+                    return response()->json($respone, 200);
+
+            }else{
+
+                    $messages = 'Update hutang tidak berhasil, silahkan coba kembali!';
+
+                    $status_code = 401;
+
+                    $response = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 401);
+
+            }
+
+            }
+
+
+
+            }else{
+
+                    $messages = 'Id Toko Tidak Ditemukan!';
+
+                    $status_code = 401;
+
+                    $response = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 401);
+
+            }
+
+
+
+            }
+
+
+
+
+            } catch (QueryException $ex) {
+
+            throw new HttpException(500, "Gagal Menambah data, coba lagi!");
+
+            }
+
+
+
+            }
 }

@@ -15,6 +15,8 @@ class hutang_detail extends Model
 
     'id_toko',
 
+    'id_local',
+
     'hutang',
 
     'bayar',
@@ -29,6 +31,8 @@ class hutang_detail extends Model
 
     'status',
 
+    'aktif',
+
 
 
     ];
@@ -39,7 +43,7 @@ class hutang_detail extends Model
 
       {
 
-      return $this->hasMany(hutang::class, 'id_hutang', 'id');
+      return $this->hasMany(hutang::class, 'id_hutang', 'id_local');
 
       }
 }

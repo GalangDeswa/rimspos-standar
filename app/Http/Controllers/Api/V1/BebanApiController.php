@@ -114,15 +114,14 @@ class BebanApiController extends Controller
 
                         ->with('kategoribeban')
 
-                        ->orderBy('tgl','DESC')
+                        ->orderBy('tgl','DESC')->get();
 
-                        ->orderBy('id','DESC')
+                    
 
-                        ->paginate(10);
+                        
 
-              if(count($ktr) > 0){
-
-                    $dtl = $ktr->getCollection();                    
+              if($ktr){
+             
 
                     $success = true;
 
@@ -132,11 +131,11 @@ class BebanApiController extends Controller
 
                     $respone =  fractal()
 
-                          ->collection($dtl, new BebanTransformer(), 'data')
+                          ->collection($ktr, new BebanTransformer(), 'data')
 
                             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                            ->paginateWith(new IlluminatePaginatorAdapter($ktr))
+                    
 
                             ->addMeta([
 
@@ -150,7 +149,7 @@ class BebanApiController extends Controller
 
               }else{
 
-                    $dtl = $ktr->getCollection();
+             
 
                     $success = false;
 
@@ -160,11 +159,11 @@ class BebanApiController extends Controller
 
                     $response =  fractal()
 
-                        ->collection($dtl, new BebanTransformer(), 'data')
+                        ->collection($ktr, new BebanTransformer(), 'data')
 
                         ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                        ->paginateWith(new IlluminatePaginatorAdapter($ktr))
+                   
 
                         ->addMeta([
 
@@ -246,15 +245,14 @@ class BebanApiController extends Controller
 
               $ktr = Beban::whereRaw('id_toko = '.$request->id_toko.' AND (nama LIKE "%'.$request->search.'%" OR tgl LIKE "%'.$request->search.'%" OR jumlah LIKE "%'.$request->search.'%")')
 
-                    ->orderBy('tgl','DESC')
+                    ->orderBy('tgl','DESC')->get();
 
-                    ->orderBy('id','DESC')
+                    
 
-                    ->paginate(10);
 
-              if(count($ktr) > 0){
+              if($ktr){
 
-                    $dtl = $ktr->getCollection();                    
+                               
 
                     $success = true;
 
@@ -264,11 +262,10 @@ class BebanApiController extends Controller
 
                     $respone =  fractal()
 
-                          ->collection($dtl, new BebanTransformer(), 'data')
+                          ->collection($ktr, new BebanTransformer(), 'data')
 
                             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                            ->paginateWith(new IlluminatePaginatorAdapter($ktr))
 
                             ->addMeta([
 
@@ -282,7 +279,7 @@ class BebanApiController extends Controller
 
               }else{
 
-                    $dtl = $ktr->getCollection();
+     
 
                     $success = false;
 
@@ -292,11 +289,11 @@ class BebanApiController extends Controller
 
                     $response =  fractal()
 
-                        ->collection($dtl, new BebanTransformer(), 'data')
+                        ->collection($ktr, new BebanTransformer(), 'data')
 
                         ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                        ->paginateWith(new IlluminatePaginatorAdapter($ktr))
+                
 
                         ->addMeta([
 
@@ -811,6 +808,218 @@ class BebanApiController extends Controller
 
 
     }
+
+
+
+
+
+    public function beban_local_to_database(Request $request){
+
+        try {
+
+                $validator = Validator::make($request->all(),
+
+                array(
+
+
+
+                'id_toko' => 'required|int',
+
+
+
+                )
+
+                );
+
+        if ($validator->fails()) {
+
+                $error_messages = $validator->messages()->all();
+
+                $status_code = 422;
+
+                $response = fractal()
+
+                ->item($error_messages)
+
+                ->transformWith(new ErorrTransformer($status_code))
+
+                ->serializeWith(new ArraySerializer())
+
+                ->toArray();
+
+                return response()->json($response, 422);
+
+
+
+        }else{
+
+
+
+            $cektoko = Toko::where('id',$request->id_toko)->first();
+
+        if($cektoko){
+
+
+            $id = $request->id_local;
+        
+            $id_toko = $request->id_toko;
+
+            $id_ktr_beban = $request->id_ktr_beban;
+
+            $id_user = $request->id_user;
+
+            $nama = $request->nama;
+
+            $keterangan = $request->keterangan;
+
+            $tgl = $request->tgl;
+
+            $jumlah = $request->jumlah;
+
+        
+        
+            $checkid = Beban::where('id_local',$request->id_local)
+                            ->where('id_toko',$request->id_toko)
+                                
+                            ->first();
+
+        if($checkid == null){
+
+            $data = new Beban;
+            $data->id_local = $id;
+        
+            $data->id_toko = $id_toko;
+            $data->id_user = $id_user;
+            $data->id_ktr_beban = $id_ktr_beban;
+            $data->nama = $nama;
+            $data->keterangan = $keterangan;
+            $data->tgl = date("Y-m-d",strtotime($tgl));
+            $data->jumlah = $jumlah;
+        
+            if($data->save()){
+
+            $messages = 'Data Beban Berhasil Ditambah';
+
+            $respone = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new SuccessTransformer)
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($respone, 200);
+
+        }else{
+
+            $messages = 'Tambah Beban tidak berhasil, silahkan coba kembali!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+        }else{
+
+            $data = Beban::where('id_local',$request->id_local)->where('id_toko',$request->id_toko)->first();
+
+        $data->id_toko = $id_toko;
+        $data->id_user = $id_user;
+        $data->id_ktr_beban = $id_ktr_beban;
+        $data->nama = $nama;
+        $data->keterangan = $keterangan;
+        $data->tgl = date("Y-m-d",strtotime($tgl));
+        $data->jumlah = $jumlah;
+
+            if($data->save()){
+
+            $messages = 'Data beban Berhasil Diupdate';
+
+            $respone = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new SuccessTransformer)
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($respone, 200);
+
+        }else{
+
+            $messages = 'Update Beban tidak berhasil, silahkan coba kembali!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+        }
+
+
+
+        }else{
+
+            $messages = 'Id Toko Tidak Ditemukan!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+
+
+        }
+
+
+
+
+        } catch (QueryException $ex) {
+
+        throw new HttpException(500, "Gagal Menambah data, coba lagi!");
+
+        }
+
+
+
+        }
 
 
 

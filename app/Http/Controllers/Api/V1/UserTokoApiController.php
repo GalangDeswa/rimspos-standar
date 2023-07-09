@@ -132,11 +132,11 @@ class UserTokoApiController extends Controller
 
             }else{
 
-                $ktr = User::where('id_toko',$request->id_toko)->whereIn('role', ['1', '2'])->paginate(10);
+                $ktr = User::where('id_toko',$request->id_toko)->whereIn('role', ['1', '2'])->get();
 
-                if(count($ktr) > 0){
+                if($ktr){
 
-                    $dtl = $ktr->getCollection();                    
+                                      
 
                     $success = true;
 
@@ -146,11 +146,10 @@ class UserTokoApiController extends Controller
 
                     $response =  fractal()
 
-                            ->collection($dtl, new UserTransformer(), 'data')
+                            ->collection($ktr, new UserTransformer(), 'data')
 
                             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                            ->paginateWith(new IlluminatePaginatorAdapter($ktr))
 
                             ->addMeta([
 
@@ -172,7 +171,7 @@ class UserTokoApiController extends Controller
 
                     
 
-                    $dtl = $ktr->getCollection();
+                  
 
                     $success = false;
 
@@ -182,11 +181,11 @@ class UserTokoApiController extends Controller
 
                     $response =  fractal()
 
-                        ->collection($dtl, new UserTransformer(), 'data')
+                        ->collection($ktr, new UserTransformer(), 'data')
 
                         ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                        ->paginateWith(new IlluminatePaginatorAdapter($ktr))
+                    
 
                         ->addMeta([
 
@@ -628,7 +627,7 @@ class UserTokoApiController extends Controller
 
                         'id' => 'required|int',
 
-                        'id_user' => 'required|int',
+                       // 'id_user' => 'required|int',
 
                         'id_toko' => 'required|int',
 

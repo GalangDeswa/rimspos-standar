@@ -60,6 +60,8 @@ class PenjualanTransformer extends TransformerAbstract
 
         $respon["id"] = $dtl->id;
 
+        $respon["id_local"] = $dtl->id_local;
+
         $respon["meja"] = $dtl->meja;
 
         $respon["id_toko"] = $dtl->id_toko;
@@ -67,6 +69,8 @@ class PenjualanTransformer extends TransformerAbstract
         $respon["id_user"] = $dtl->id_user;
 
         $respon["id_hutang"] = $dtl->id_hutang;
+
+        $respon["id_pelanggan"] = $dtl->id_pelanggan;
         
         $respon["nama_pelanggan"] = $dtl->pelanggan->nama_pelanggan ?? '-';
 
@@ -84,11 +88,13 @@ class PenjualanTransformer extends TransformerAbstract
 
         $respon["kembalian"] = $dtl->kembalian;
 
-        $respon["tgl_penjualan"] = date("d-m-Y / H:i",strtotime($dtl->tgl_penjualan));
+        $respon["tgl_penjualan"] = $dtl->tgl_penjualan;
 
         $respon["metode_bayar"] = $dtl->metode_bayar;
 
         $respon["status"] = $dtl->status;
+
+        $respon["aktif"] = $dtl->aktif;
 
 
 
@@ -117,6 +123,8 @@ class PenjualanTransformer extends TransformerAbstract
                                 "qty"           => $dtlpenjl->qty,
 
                                 "diskon_brg"    => $dtlpenjl->diskon_brg,
+
+                                "diskon_kasir" => $dtlpenjl->diskon_kasir,
 
                                 "total"         => $dtlpenjl->total,
 

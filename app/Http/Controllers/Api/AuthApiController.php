@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+use Tymon\JWTAuth\Exceptions\JWTException;
+
+
 
 class AuthApiController extends Controller
 
@@ -34,7 +40,7 @@ class AuthApiController extends Controller
 
     {
 
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','refresh_token']]);
 
     }
 
@@ -316,7 +322,7 @@ class AuthApiController extends Controller
 
             'token_type' => 'bearer',
 
-            // 'expires_in' => \Carbon\Carbon::now()->addMinutes(config('jwt.ttl'))->format('d-m-Y H:i:s')
+           // 'expires_in' => \Carbon\Carbon::now()->addMinutes(config('jwt.ttl'))->format('d-m-Y H:i:s')
 
         ]);
 

@@ -18,6 +18,7 @@ class hutangTransformer extends TransformerAbstract
     public function transform($dtl)
     {
         $respon["id"] = $dtl->id;
+        $respon["id_local"] = $dtl->id_local;
 
         $respon["id_pelanggan"] = $dtl->id_pelanggan;
 
@@ -29,107 +30,108 @@ class hutangTransformer extends TransformerAbstract
         
         $respon["tgl_hutang"] = $dtl->tgl_hutang;
 
-      
-
-
          $respon["status"] = $dtl->status;
 
+         $respon["aktif"] = $dtl->aktif;
 
-        $hutangpenjualan = Penjualan::where('id_hutang',$dtl->id)->get();
+         return $respon;
 
-         if(count($hutangpenjualan) <= 0) { $respon["detail_hutang"]=[]; }
 
-             foreach ($hutangpenjualan as $hutang) {
+        // $hutangpenjualan = Penjualan::where('id_hutang',$dtl->id)->get();
+
+        //  if(count($hutangpenjualan) <= 0) { $respon["detail_hutang"]=[]; }
+
+        //      foreach ($hutangpenjualan as $hutang) {
                 
-                $id_penjualan = $hutang->id;
+        //         $id_penjualan = $hutang->id;
 
-                $respon["detail_hutang"][] = array(
+        //         $respon["detail_hutang"][] = array(
                    
 
-                "id_penjualan"  => $id_penjualan,   
+        //         "id_penjualan"  => $id_penjualan,   
 
-                "id_toko" => $hutang->meja,
+        //         "id_toko" => $hutang->meja,
 
-                "total_item" => $hutang->total_item,
+        //         "total_item" => $hutang->total_item,
 
-                "tgl_penjualan" => $hutang->tgl_penjualan,
+        //         "tgl_penjualan" => $hutang->tgl_penjualan,
 
-                "metode_bayar" => $hutang->metode_bayar,
+        //         "metode_bayar" => $hutang->metode_bayar,
 
                 
-                );
+        //         );
 
         
 
-                 $detailpnjl = PenjualanDetail::where('id_penjualan',$id_penjualan)->get();
+        //          $detailpnjl = PenjualanDetail::where('id_penjualan',$id_penjualan)->get();
 
-                 if(count($detailpnjl) <= 0) { $respon["detail_item"]=[]; }
+        //          if(count($detailpnjl) <= 0) { $respon["detail_item"]=[]; }
                  
-                 foreach ($detailpnjl as $dtlpenjl) {
+        //          foreach ($detailpnjl as $dtlpenjl) {
 
-                     $respon["detail_item"][]=array( "id_penjualan"=> $dtlpenjl->id_penjualan,
+        //              $respon["detail_item"][]=array( "id_penjualan"=> $dtlpenjl->id_penjualan,
 
-                     "id_produk" => $dtlpenjl->id_produk,
+        //              "id_produk" => $dtlpenjl->id_produk,
 
-                     "id_kategori" => $dtlpenjl->id_kategori,
+        //              "id_kategori" => $dtlpenjl->id_kategori,
 
-                     "id_jenis_stock" => $dtlpenjl->id_jenis_stock,
+        //              "id_jenis_stock" => $dtlpenjl->id_jenis_stock,
 
-                     "nama_brg" => $dtlpenjl->nama_brg,
+        //              "nama_brg" => $dtlpenjl->nama_brg,
 
-                     "harga_brg" => $dtlpenjl->harga_brg,
+        //              "harga_brg" => $dtlpenjl->harga_brg,
 
-                     "qty" => $dtlpenjl->qty,
+        //              "qty" => $dtlpenjl->qty,
 
-                     "diskon_brg" => $dtlpenjl->diskon_brg,
+        //              "diskon_brg" => $dtlpenjl->diskon_brg,
 
-                     "total" => $dtlpenjl->total,
+        //              "total" => $dtlpenjl->total,
 
-                     );
-
-
-
-                     }
+        //              );
 
 
-                      $riwayat = hutang_detail::where('id_hutang',$dtl->id)->get();
 
-                      if(count($riwayat) <= 0) { $respon["riwayat_hutang"]=[]; }
+        //              }
+
+
+        //               $riwayat = hutang_detail::where('id_hutang',$dtl->id)->get();
+
+        //               if(count($riwayat) <= 0) { $respon["riwayat_hutang"]=[]; }
                       
-                      foreach ($riwayat as $detail) {
-                          $respon["riwayat_hutang"][]=array(
+        //               foreach ($riwayat as $detail) {
+        //                   $respon["riwayat_hutang"][]=array(
                             
                             
-                          "id"=>$detail->id,
+        //                   "id"=>$detail->id,
 
-                          "id_hutang" =>$detail->id_hutang,
+        //                   "id_hutang" =>$detail->id_hutang,
 
-                          "id_pelanggan" =>$detail->id_pelanggan,
+        //                   "id_pelanggan" =>$detail->id_pelanggan,
 
-                          "bayar" => $detail->bayar,
+        //                   "bayar" => $detail->bayar,
 
-                          "sisa" => $detail->sisa,
+        //                   "sisa" => $detail->sisa,
 
-                          "tgl_hutang" => $detail->tgl_hutang,
+        //                   "tgl_hutang" => $detail->tgl_hutang,
 
-                          "tgl_bayar" => $detail->tgl_bayar,
+        //                   "tgl_bayar" => $detail->tgl_bayar,
 
-                          "tgl_lunas" => $detail->tgl_lunas,
+        //                   "tgl_lunas" => $detail->tgl_lunas,
 
-                          );
+        //                   );
 
 
 
-                          }
+        //                   }
 
 
                      
 
-         }
+        //  }
 
          
 
-         return $respon;
+         
 
 
 

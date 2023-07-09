@@ -13,6 +13,8 @@ class pelanggan extends Model
 
     'id_toko',
 
+    'id_local',
+
     'nama_pelanggan',
 
     'no_hp',
@@ -34,7 +36,7 @@ class pelanggan extends Model
 
     {
 
-    return $this->hasMany(Penjualan::class, 'id_pelanggan', 'id');
+    return $this->hasMany(Penjualan::class, 'id_pelanggan', 'id_local');
 
     }
 }

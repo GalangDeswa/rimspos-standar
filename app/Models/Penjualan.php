@@ -22,7 +22,7 @@ class Penjualan extends Model
 
     {
 
-        return $this->hasMany(PenjualanDetail::class, 'id_penjualan', 'id');
+        return $this->hasMany(PenjualanDetail::class, 'id_penjualan', 'id_local');
 
     }
 
@@ -31,7 +31,7 @@ class Penjualan extends Model
 
     {
 
-    return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id');
+    return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id_local');
 
     }
 

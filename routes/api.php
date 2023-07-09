@@ -30,7 +30,9 @@ $api->version('v1', function ($api) {
 
       $api->group(['prefix' => 'iklan','namespace' => 'App\Http\Controllers\Api'], function ($api){
             $api->get('loadkonten_square', 'kontenController@loadkonten_square');
-             $api->get('loadkonten_banner', 'kontenController@loadkonten_banner');
+            $api->get('loadkonten_banner', 'kontenController@loadkonten_banner');
+            //api untuk tambah user pertama kali, tidak ada token
+            $api->post('tambah_user_manual', 'kontenController@tambahusermanual');
       });
 
 
@@ -54,6 +56,7 @@ $api->version('v1', function ($api) {
             $api->post('tambah', 'KategoriApiController@tambah_jenis');
             $api->post('edit', 'KategoriApiController@edit_jenis');
             $api->post('hapus', 'KategoriApiController@hapus_jenis');
+            $api->post('sync_produk_jenis', 'KategoriApiController@sync_produk_jenis');
         });
 
         $api->group(['prefix' => 'beban/kategori'], function ($api) {
@@ -62,6 +65,7 @@ $api->version('v1', function ($api) {
             $api->post('tambah', 'KategoriApiController@tambah_kategoribeban');
             $api->post('edit', 'KategoriApiController@edit_kategoribeban');
             $api->post('hapus', 'KategoriApiController@hapus_kategoribeban');
+            $api->post('sync_beban_kategori', 'KategoriApiController@sync_beban_kategori');
         });
 
         $api->group(['prefix' => 'beban'], function ($api) {
@@ -71,16 +75,19 @@ $api->version('v1', function ($api) {
             $api->post('tambah', 'BebanApiController@tambah_beban');
             $api->post('edit', 'BebanApiController@edit_beban');
             $api->post('hapus', 'BebanApiController@hapus_beban');
+            $api->post('sync_beban', 'BebanApiController@beban_local_to_database');
         });
 
         $api->group(['prefix' => 'produk'], function ($api) {
             ////////PRODUK-----------------------------
-            $api->post('data/allproduk', 'ProdukApiController@data_produk_all');
+            $api->post('data/allproduk', 'ProdukApiController@data_produk_allv2');
             $api->post('data/byjenis', 'ProdukApiController@data_produk_byjenis');
             $api->post('tambah', 'ProdukApiController@tambah_produk');
             $api->post('edit', 'ProdukApiController@edit_produk');
             $api->post('hapus', 'ProdukApiController@hapus_produk');
             $api->post('tambah/stock', 'ProdukApiController@tambahstock_produk');
+            $api->post('sync_produk', 'ProdukApiController@produk_local_to_database');
+            $api->post('check_id_produk', 'ProdukApiController@check_id_produk');
         });
 
         $api->group(['prefix' => 'kasir'], function ($api) {
@@ -102,6 +109,10 @@ $api->version('v1', function ($api) {
             $api->post('data/hariini', 'PenjualanApiController@reversal_data');
 
             $api->post('reversal', 'PenjualanApiController@reversal_aksi');
+
+            $api->post('data/detail_all', 'PenjualanApiController@penjualan_detail_all');
+            $api->post('sync_penjualan', 'PenjualanApiController@penjualan_local_to_database');
+            $api->post('sync_penjualan_detail', 'PenjualanApiController@penjualan_detail_local_to_database');
             
         });
 
@@ -122,6 +133,7 @@ $api->version('v1', function ($api) {
          $api->post('tambah', 'pelangganController@tambah_pelanggan');
          $api->post('edit', 'pelangganController@edit_pelanggan');
          $api->post('hapus', 'pelangganController@hapus_pelanggan');
+         $api->post('sync_pelanggan', 'pelangganController@pelanggan_local_to_database');
 
          });
 
@@ -132,14 +144,15 @@ $api->version('v1', function ($api) {
           $api->post('data', 'hutangController@hutang_all');
           $api->post('tambah', 'hutangController@tambah_hutang');
           $api->post('bayar', 'hutangController@bayar_hutang');
-        //   $api->post('hapus', 'pelangganController@hapus_pelanggan');
+          $api->post('sync_hutang', 'hutangController@hutang_local_to_database');
 
           });
 
 
            $api->group(['prefix' => 'hutang_detail'], function ($api) {
-           ////////HUTANG-----------------------------
+           ////////HUTANG DETAIL-----------------------------
            $api->post('data', 'hutang_detailController@hutang_detail_all');
+           $api->post('sync_hutang_detail', 'hutang_detailController@hutang_detail_local_to_database');
           
 
            });

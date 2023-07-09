@@ -28,6 +28,8 @@ class Produk extends Model
 
         'id_toko',
 
+        'id_local',
+
         'barcode',
 
         'id_user',
@@ -78,7 +80,7 @@ class Produk extends Model
 
     {
 
-        return $this->belongsTo(ProdukJenis::class, 'id_jenis', 'id');
+        return $this->belongsTo(ProdukJenis::class, 'id_jenis', 'id_local');
 
     }
 

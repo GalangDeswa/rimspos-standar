@@ -23,6 +23,7 @@ use App\Models\Produk;
 use App\Models\ProdukJenis;
 
 use App\Models\ProdukKategori;
+use App\Models\User;
 
 
 
@@ -183,6 +184,164 @@ $x = 2;
     } catch (QueryException $ex) {
 
     throw new HttpException(401, "Gagal menampilkan data, coba lagi!");
+
+    }
+
+
+
+    }
+
+
+
+
+
+    public function tambahusermanual(Request $request){
+
+    try {
+
+    $validator = Validator::make($request->all(),
+
+        array(
+
+       // 'id_user' => 'required|int',
+
+        //'id_toko' => 'required|int',
+
+        'nama' => 'required',
+
+        'email' => 'required',
+
+        'password' => 'required',
+
+        'role' => 'required',
+
+        )
+
+    );
+
+    if ($validator->fails()) {
+
+        $error_messages = $validator->messages()->all();
+
+        // $messages = 'Missing Parameter Value!';
+
+        $status_code = 422;
+
+        $response = fractal()
+
+        ->item($error_messages)
+
+        ->transformWith(new ErorrTransformer($status_code))
+
+        ->serializeWith(new ArraySerializer())
+
+        ->toArray();
+
+        return response()->json($response, 422);
+
+
+
+    }else{
+
+       // $cektoko = Toko::where('id',$request->id_toko)->first();
+
+
+        if($request->role != "1" && $request->role != "2"){
+
+            $messages = 'Role akses hanya terdiri dari (1. kasir. 2.admin)';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+        return response()->json($response, 401);
+
+    }
+
+            $data = new User();
+
+          //  $data->created_by = $request->id_user;
+
+            $data->id_toko = $request->id_toko;
+
+            $data->name = $request->nama;
+
+            $data->email = $request->email;
+
+            $data->hp = $request->hp;
+
+            $data->password = bcrypt($request->password);
+
+            $data->role = $request->role;
+
+
+            $data->status = 1;
+
+
+
+
+
+    if($data->save()){
+
+            $messages = 'Data Berhasil Ditambah';
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new SuccessTransformer)
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($response, 200);
+
+    }else{
+
+            $messages = 'Tambah User tidak berhasil, silahkan coba kembali!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+    }
+
+    
+
+
+
+    
+
+
+
+    }
+
+
+
+
+
+    } catch (QueryException $ex) {
+
+          throw new HttpException(401, "Gagal Menambah data, coba lagi!");
 
     }
 

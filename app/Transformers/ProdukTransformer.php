@@ -32,17 +32,19 @@ class ProdukTransformer extends TransformerAbstract
 
 
 
-        if($dtl->image != ''){
+        // if($dtl->image != ''){
 
-            $image = url('/').'/'.$dtl->image;
+        //     $image = url('/').'/'.$dtl->image;
 
-        }else{
+        // }else{
 
-            $image = '';
+        //     $image = '';
 
-        }
+        // }
 
         $respon["id"] = $dtl->id;
+
+        $respon["id_local"] = $dtl->id_local;
 
         $respon["barcode"] = $dtl->barcode;
 
@@ -70,7 +72,7 @@ class ProdukTransformer extends TransformerAbstract
 
         $respon["diskon_barang"] = $dtl->diskon_barang;
 
-        $respon["image"] = $image;
+        $respon["image"] = $dtl->image;
 
         $respon["status"] = $dtl->status;
 

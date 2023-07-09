@@ -20,6 +20,7 @@ use Image;
 
 
 
+
 use App\Models\Toko;
 
 use App\Models\Produk;
@@ -63,6 +64,121 @@ class ProdukApiController extends Controller
 
 
 ////// PRODUK
+
+public function data_produk_allv2(Request $request){
+
+    try {
+
+        $validator = Validator::make($request->all(),
+
+        array(
+
+        'id_toko' => 'required|int'
+
+        )
+
+        );
+
+    if ($validator->fails()) {
+
+            $error_messages = $validator->messages()->all();
+
+            $status_code = 422;
+
+            $response = fractal()
+
+            ->item($error_messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 422);
+
+
+
+    }else{
+
+        $produk = Produk::where('id_toko',$request->id_toko)->get();
+
+
+
+    if($produk){
+
+
+        $success = true;
+
+        $status_code = 200;
+
+        $messages = 'Data Berhasil Ditampilkan!';
+
+        $respone = fractal()
+
+        ->collection($produk, new ProdukTransformer, 'data')
+
+        ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
+
+        ->addMeta([
+
+        'catatan' => array('kategori' => '1. barang, 2. Jasa, 3. Paket',
+
+        'status' => '1. aktif, 2. tidak aktif ', 'total data' => count($produk))
+
+        ])
+
+        ->toArray();
+
+        return response()->json($respone, 200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' =>
+        'utf-8'],
+        );
+
+    }else{
+
+        $produkrow = $produk;
+
+        $success = false;
+
+        $status_code = 200;
+
+        $messages = 'Tidak Ada Data Ditemukan!';
+
+        $respone = fractal()
+
+        ->collection($produkrow, new ProdukTransformer, 'data')
+
+        ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
+
+        // ->paginateWith(new IlluminatePaginatorAdapter($produk))
+
+        // ->addMeta([
+
+        // 'catatan' => array('kategori' => '1. barang, 2. Jasa, 3. Paket',
+
+        // 'status' => '1. aktif, 2. tidak aktif ')
+
+        // ])
+
+        ->toArray();
+
+    return response()->json($respone, 200);
+
+    }
+
+
+
+    }
+
+    } catch (QueryException $ex) {
+
+    throw new HttpException(500, "Gagal menampilkan data, coba lagi!");
+
+    }
+
+
+
+}
 
     public function data_produk_all(Request $request){
 
@@ -110,13 +226,13 @@ class ProdukApiController extends Controller
 
                         ->with('jenisproduk','kategoriproduk')
 
-                        ->orderBy('nama_produk','ASC')
+                        ->orderBy('id','DESC')->paginate(5);
 
-                        ->paginate(10);
+                        
 
-                if(count($produk) > 0){
+                if($produk){
 
-                    $produkrow = $produk->getCollection();                    
+                    $produkrow = $produk;                    
 
                     $success = true;
 
@@ -130,7 +246,7 @@ class ProdukApiController extends Controller
 
                             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                            ->paginateWith(new IlluminatePaginatorAdapter($produk))
+                           ->paginateWith(new IlluminatePaginatorAdapter($produk))
 
                             ->addMeta([
 
@@ -146,7 +262,7 @@ class ProdukApiController extends Controller
 
                 }else{
 
-                    $produkrow = $produk->getCollection();                    
+                    $produkrow = $produk;                    
 
                     $success = false;
 
@@ -160,15 +276,15 @@ class ProdukApiController extends Controller
 
                             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-                            ->paginateWith(new IlluminatePaginatorAdapter($produk))
+                           // ->paginateWith(new IlluminatePaginatorAdapter($produk))
 
-                            ->addMeta([
+                            // ->addMeta([
 
-                                'catatan' => array('kategori' => '1. barang, 2. Jasa, 3. Paket',
+                            //     'catatan' => array('kategori' => '1. barang, 2. Jasa, 3. Paket',
 
-                                                    'status' => '1. aktif, 2. tidak aktif   ') 
+                            //                         'status' => '1. aktif, 2. tidak aktif   ') 
 
-                            ])
+                            // ])
 
                             ->toArray();
 
@@ -1019,7 +1135,7 @@ class ProdukApiController extends Controller
 
                             ->toArray();
 
-                        return response()->json($respone, 401);
+                        return response()->json($response, 401);
 
                     }
 
@@ -1041,7 +1157,7 @@ class ProdukApiController extends Controller
 
                         ->toArray();
 
-                    return response()->json($respone, 401); 
+                    return response()->json($response, 401); 
 
               }
 
@@ -1062,7 +1178,267 @@ class ProdukApiController extends Controller
     }
 
 
+public function produk_local_to_database(Request $request){
 
+    try {
+
+        $validator = Validator::make($request->all(),
+
+        array(
+
+    
+
+        'id_toko' => 'required|int',
+
+    
+
+        )
+
+    );
+
+    if ($validator->fails()) {
+
+        $error_messages = $validator->messages()->all();
+
+        $status_code = 422;
+
+        $response = fractal()
+
+        ->item($error_messages)
+
+        ->transformWith(new ErorrTransformer($status_code))
+
+        ->serializeWith(new ArraySerializer())
+
+        ->toArray();
+
+        return response()->json($response, 422);
+
+
+
+    }else{
+
+
+
+         $cektoko = Toko::where('id',$request->id_toko)->first();
+
+    if($cektoko){
+        
+
+        $id = $request->id_local;
+        $barcode = $request->barcode;
+        $id_toko = $request->id_toko;
+        $id_user = $request->id_user;
+        $id_jenis = $request->id_jenis;
+        $id_kategori = $request->id_kategori;
+        $id_jenis_stock = $request->id_jenis_stock;
+        $nama_produk = $request->nama_produk;
+        $deskripsi = $request->deskripsi;
+        $qty = $request->qty;
+        $harga = $request->harga;
+        $harga_modal = $request->harga_modal;
+        $diskon_barang = $request->diskon_barang;
+        $image = $request->image;
+        $status = $request->status;
+     
+
+       $checkid = Produk::where('id_local',$request->id_local)
+                        ->where('id_toko',$request->id_toko)
+       
+                        ->first();
+
+       if($checkid == null){
+
+             $data = new Produk;
+             $data->id_local = $id;
+             $data->barcode = $barcode;
+             $data->id_toko = $id_toko;
+             $data->id_user = $id_user;
+             $data->id_jenis = $id_jenis;
+             $data->id_kategori = $id_kategori;
+             $data->id_jenis_stock = $id_jenis_stock;
+             $data->nama_produk = $nama_produk;
+             $data->deskripsi = $deskripsi;
+             $data->qty = $qty;
+             $data->harga = $harga;
+             $data->harga_modal = $harga_modal;
+             $data->diskon_barang = $diskon_barang;
+             $data->image = $image;
+             $data->status = $status;
+           //  $data->aktif = $aktif;
+             //$data->created_at = $created_at;
+             // $data->updated_at = $updated_at;
+             // $data->deleted_at = $deleted_at;
+             if($data->save()){
+
+                    $messages = 'Data Berhasil Ditambah';
+
+                    $respone = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new SuccessTransformer)
+
+                    ->serializeWith(new ArraySerializer)
+
+                    ->toArray();
+
+                    return response()->json($respone, 200);
+
+             }else{
+
+                    $messages = 'Tambah Produk tidak berhasil, silahkan coba kembali!';
+
+                    $status_code = 401;
+
+                    $response = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 401);
+
+             }
+
+       }else{
+
+             $data = Produk::where('id_local',$request->id_local)->where('id_toko',$request->id_toko)->first();
+            
+             $data->barcode = $barcode;
+             $data->id_toko = $id_toko;
+             $data->id_user = $id_user;
+             $data->id_jenis = $id_jenis;
+             $data->id_kategori = $id_kategori;
+             $data->id_jenis_stock = $id_jenis_stock;
+             $data->nama_produk = $nama_produk;
+             $data->deskripsi = $deskripsi;
+             $data->qty = $qty;
+             $data->harga = $harga;
+             $data->harga_modal = $harga_modal;
+             $data->diskon_barang = $diskon_barang;
+             $data->image = $image;
+             $data->status = $status;
+             //$data->aktif = $aktif;
+             //$data->created_at = $created_at;
+             // $data->updated_at = $updated_at;
+             // $data->deleted_at = $deleted_at;
+             if($data->save()){
+
+                    $messages = 'Data Berhasil Diupdate';
+
+                    $respone = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new SuccessTransformer)
+
+                    ->serializeWith(new ArraySerializer)
+
+                    ->toArray();
+
+                    return response()->json($respone, 200);
+
+             }else{
+
+                    $messages = 'Update Produk tidak berhasil, silahkan coba kembali!';
+
+                    $status_code = 401;
+
+                    $response = fractal()
+
+                    ->item($messages)
+
+                    ->transformWith(new ErorrTransformer($status_code))
+
+                    ->serializeWith(new ArraySerializer())
+
+                    ->toArray();
+
+                    return response()->json($response, 401);
+
+             }
+
+       }
+
+    
+            
+             
+       
+
+
+
+    }else{
+
+    $messages = 'Id Toko Tidak Ditemukan!';
+
+    $status_code = 401;
+
+    $response = fractal()
+
+    ->item($messages)
+
+    ->transformWith(new ErorrTransformer($status_code))
+
+    ->serializeWith(new ArraySerializer())
+
+    ->toArray();
+
+    return response()->json($response, 401);
+
+    }
+
+
+
+}
+
+
+
+
+
+} catch (QueryException $ex) {
+
+throw new HttpException(500, "Gagal Menambah data, coba lagi!");
+
+}
+
+
+
+}
+
+
+
+
+public function check_id_produk (Request $request){
+
+    try {
+
+        
+    $id = Produk::latest('id')->first();
+   
+        if($id == null){
+            return 0;
+        }else{
+ return $id;
+
+        }
+
+  
+
+
+    } catch (QueryException $ex) {
+
+        throw new HttpException(500, "Menambah Stock Produk tidak berhasil, silahkan coba kembali!");
+
+    }
+
+
+
+}
 
 
 }

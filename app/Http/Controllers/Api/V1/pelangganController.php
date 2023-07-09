@@ -88,13 +88,13 @@ class pelangganController extends Controller
 
             ->with('penjualan')
 
-            ->orderBy('nama_pelanggan','ASC')
+            ->orderBy('nama_pelanggan','ASC')->get();
 
-            ->paginate(10);
+           
 
-        if(count($pelanggan) > 0){
+        if($pelanggan){
 
-            $pelangganrow = $pelanggan->getCollection();
+          
 
             $success = true;
 
@@ -104,11 +104,11 @@ class pelangganController extends Controller
 
             $respone = fractal()
 
-            ->collection($pelangganrow, new pelangganTransformer, 'data')
+            ->collection($pelanggan, new pelangganTransformer, 'data')
 
             ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-            ->paginateWith(new IlluminatePaginatorAdapter($pelanggan))
+        
 
             ->addMeta([
 
@@ -123,7 +123,7 @@ class pelangganController extends Controller
 
         }else{
 
-        $pelangganrow = $pelanggan->getCollection();
+      
 
         $success = false;
 
@@ -133,11 +133,11 @@ class pelangganController extends Controller
 
         $respone = fractal()
 
-        ->collection($pelangganrow, new pelangganTransformer, 'data')
+        ->collection($pelanggan, new pelangganTransformer, 'data')
 
         ->serializeWith(new ArraySerializerV2($success,$status_code,$messages))
 
-        ->paginateWith(new IlluminatePaginatorAdapter($pelanggan))
+     
 
         ->addMeta([
 
@@ -638,6 +638,209 @@ class pelangganController extends Controller
         } catch (QueryException $ex) {
 
         throw new HttpException(401, "Hapus kategori beban tidak berhasil, silahkan coba kembali!");
+
+        }
+
+
+
+        }
+
+
+
+
+     public function pelanggan_local_to_database(Request $request){
+
+        try {
+
+        $validator = Validator::make($request->all(),
+
+        array(
+
+
+
+         'id_toko' => 'required|int',
+
+
+
+        )
+
+        );
+
+        if ($validator->fails()) {
+
+            $error_messages = $validator->messages()->all();
+
+            $status_code = 422;
+
+            $response = fractal()
+
+            ->item($error_messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 422);
+
+
+
+        }else{
+
+
+
+          $cektoko = Toko::where('id',$request->id_toko)->first();
+
+        if($cektoko){
+
+
+            $id = $request->id_local;
+
+            $id_toko = $request->id_toko;
+
+            $nama_pelanggan= $request->nama_pelanggan;
+
+            $no_hp = $request->no_hp;
+
+         
+            $aktif = $request->aktif;
+
+
+
+
+
+            $checkid = pelanggan::where('id_local',$request->id_local)
+            ->where('id_toko',$request->id_toko)
+
+            ->first();
+
+        if($checkid == null){
+
+            $data = new pelanggan();
+            $data->id_local = $id;
+
+            $data->id_toko = $id_toko;
+            $data->nama_pelanggan = $nama_pelanggan;
+            $data->no_hp = $no_hp;
+            $data->aktif = $aktif;
+            
+
+        if($data->save()){
+
+            $messages = 'Data pelanggan Berhasil Ditambah';
+
+            $respone = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new SuccessTransformer)
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($respone, 200);
+
+        }else{
+
+            $messages = 'Tambah pelanggan tidak berhasil, silahkan coba kembali!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+        }else{
+
+            $data = pelanggan::where('id_local',$request->id_local)->where('id_toko',$request->id_toko)->first();
+
+           $data->id_toko = $id_toko;
+           $data->nama_pelanggan = $nama_pelanggan;
+           $data->no_hp = $no_hp;
+           $data->aktif = $aktif;
+
+            if($data->save()){
+
+            $messages = 'Data pelanggan Berhasil Diupdate';
+
+            $respone = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new SuccessTransformer)
+
+            ->serializeWith(new ArraySerializer)
+
+            ->toArray();
+
+            return response()->json($respone, 200);
+
+        }else{
+
+            $messages = 'Update pelanggan tidak berhasil, silahkan coba kembali!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+        }
+
+
+
+        }else{
+
+            $messages = 'Id Toko Tidak Ditemukan!';
+
+            $status_code = 401;
+
+            $response = fractal()
+
+            ->item($messages)
+
+            ->transformWith(new ErorrTransformer($status_code))
+
+            ->serializeWith(new ArraySerializer())
+
+            ->toArray();
+
+            return response()->json($response, 401);
+
+        }
+
+
+
+        }
+
+
+
+
+        } catch (QueryException $ex) {
+
+             throw new HttpException(500, "Gagal Menambah data, coba lagi!");
 
         }
 

@@ -13,6 +13,8 @@ class hutang extends Model
 
    'id_pelanggan',
 
+   'id_local',
+
    'id_toko',
 
    'hutang',
@@ -33,18 +35,18 @@ class hutang extends Model
 
     {
 
-        return $this->hasMany(Penjualan::class, 'id_hutang', 'id');
+        return $this->hasMany(Penjualan::class, 'id_hutang', 'id_local');
 
     }
 
 
     public function pelanggan()
     {
-         return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id');
+         return $this->belongsTo(pelanggan::class, 'id_pelanggan', 'id_local');
     }
 
      public function riwayat_hutang()
      {
-     return $this->hasMany(hutang_detail::class, 'id_hutang', 'id');
+     return $this->hasMany(hutang_detail::class, 'id_hutang', 'id_local');
      }
 }
