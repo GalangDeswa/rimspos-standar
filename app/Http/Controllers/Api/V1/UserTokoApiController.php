@@ -34,6 +34,7 @@ use App\Transformers\SuccessTransformer;
 
 
 
+
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 use Spatie\Fractalistic\ArraySerializer;
@@ -43,6 +44,9 @@ use App\Http\Controllers\Api\ArraySerializerV2;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 
 
@@ -632,6 +636,7 @@ class UserTokoApiController extends Controller
                         'id_toko' => 'required|int',
 
                         'password' => 'required',
+                        'old_password' =>'required',
 
                             )
 
@@ -669,39 +674,39 @@ class UserTokoApiController extends Controller
 
                     $cekidkasir = User::where('id', $request->id)->first();
 
+
                     if($cekidkasir){
 
-                        $data        = User::where('id_toko',$request->id_toko)->where('id', $request->id)->first();
+                        if (Hash::check($request->old_password,$cekidkasir->password)){
 
-                        $data->password      = bcrypt($request->password);
+                             $data = User::where('id_toko',$request->id_toko)->where('id', $request->id)->first();
 
-                        
+                             $data->password = bcrypt($request->password);
 
 
+                             if($data->save()){
 
-                        if($data->save()){
+                                $messages = 'Data Berhasil Diperbaharui';
 
-                            $messages = 'Data Berhasil Diperbaharui';
-
-                            $response =  fractal()
+                                $response = fractal()
 
                                 ->item($messages)
 
                                 ->transformWith(new SuccessTransformer)
 
-                                ->serializeWith(new ArraySerializer)        
+                                ->serializeWith(new ArraySerializer)
 
                                 ->toArray();
 
-                            return response()->json($response, 200); 
+                                return response()->json($response, 200);
 
-                        }else{
+                             }else{
 
-                            $messages = 'Edit Pass User tidak berhasil, silahkan coba kembali!';
+                                $messages = 'Edit Pass User tidak berhasil, silahkan coba kembali!';
 
-                            $status_code = 401;
+                                $status_code = 401;
 
-                            $response =  fractal()
+                                $response = fractal()
 
                                 ->item($messages)
 
@@ -711,10 +716,30 @@ class UserTokoApiController extends Controller
 
                                 ->toArray();
 
-                            return response()->json($response, 401);
+                                return response()->json($response, 401);
 
+                             }
+
+                        }else{
+
+                            $messages = 'Password lama salah';
+
+                            $status_code = 401;
+
+                            $response = fractal()
+
+                            ->item($messages)
+
+                            ->transformWith(new ErorrTransformer($status_code))
+
+                            ->serializeWith(new ArraySerializer())
+
+                            ->toArray();
+
+                            return response()->json($response, 401);
                         }
 
+                       
                     }else{
 
                         $messages = 'Id User Tidak Ditemukan!';
@@ -926,6 +951,11 @@ class UserTokoApiController extends Controller
 
 
     }
+
+
+
+
+   
 
 
 

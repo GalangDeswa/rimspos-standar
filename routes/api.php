@@ -33,12 +33,22 @@ $api->version('v1', function ($api) {
             $api->get('loadkonten_banner', 'kontenController@loadkonten_banner');
             //api untuk tambah user pertama kali, tidak ada token
             $api->post('tambah_user_manual', 'kontenController@tambahusermanual');
+            $api->get('loadtokoall', 'kontenController@loadtokoall');
       });
+
+$api->group(['prefix' => 'forgot','namespace' => 'App\Http\Controllers\Api'], function ($api){
+  $api->post('forgot_password', 'forgotController@forgot_password');
+});
+    
+
+       
 
 
     $api->group(['middleware' => 'auth:api','namespace' => 'App\Http\Controllers\Api\V1'], function ($api) {
 
         $api->post('loadtoko', 'HomeApiController@loadtoko');
+        $api->post('edittoko', 'HomeApiController@edit_toko');
+       
         
 
         $api->group(['prefix' => 'user'], function ($api) {

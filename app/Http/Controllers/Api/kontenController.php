@@ -24,6 +24,7 @@ use App\Models\ProdukJenis;
 
 use App\Models\ProdukKategori;
 use App\Models\User;
+use App\Transformers\HomeTransformer;
 
 
 
@@ -347,5 +348,18 @@ $x = 2;
 
 
 
+    }
+
+    public function loadtokoall(){
+    $toko = Toko::all();
+    $response  =[];
+    $response ['messages'] = 'Berhasil';
+    $response ['status'] = 200;
+    $response ['data'] = $toko;
+   
+
+    
+
+    return response()->json($response, 200);
     }
 }
