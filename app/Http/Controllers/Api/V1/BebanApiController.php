@@ -875,6 +875,7 @@ class BebanApiController extends Controller
             $tgl = $request->tgl;
 
             $jumlah = $request->jumlah;
+            $aktif = $request->aktif;
 
         
         
@@ -895,6 +896,7 @@ class BebanApiController extends Controller
             $data->keterangan = $keterangan;
             $data->tgl = date("Y-m-d",strtotime($tgl));
             $data->jumlah = $jumlah;
+            $data->aktif = $aktif;
         
             if($data->save()){
 
@@ -943,6 +945,7 @@ class BebanApiController extends Controller
         $data->keterangan = $keterangan;
         $data->tgl = date("Y-m-d",strtotime($tgl));
         $data->jumlah = $jumlah;
+        $data->aktif = $aktif;
 
             if($data->save()){
 

@@ -6,7 +6,7 @@
 
       <tr>
 
-        @if($data->filter->toko->logo != '')
+        @if($data->filter->toko->logo != null)
 
         <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
             style="display: block;margin:-32px;" width="100%" src="{{ asset($data->filter->toko->logo)}}" /></td>
@@ -14,7 +14,7 @@
         @else
 
         <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
-            style="display: block;margin:-32px;" width="100%" src="{{ asset('LOGO.png')}}" /></td>
+            style="display: block;margin:-32px;" width="100%" src="{{asset('uploads/logo/default.png')}}" /></td>
 
         @endif
 
