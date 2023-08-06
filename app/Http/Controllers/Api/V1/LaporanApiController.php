@@ -62,6 +62,8 @@ use Spatie\Fractalistic\ArraySerializer;
 
 use App\Http\Controllers\Api\ArraySerializerV2;
 use App\Models\hutang;
+use App\Models\hutang_detail;
+use Carbon\Carbon;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -203,6 +205,55 @@ class LaporanApiController extends Controller
                             ->whereDate('tgl_penjualan', '<=', $date2)
 
                             ->first();
+                            
+
+                $penjualan_cash = Penjualan::select(DB::raw('SUM(total) as total_cash'))
+
+                             ->where('id_toko',$id_toko)
+
+                             ->whereIn('status',[1,2])
+
+                             ->whereDate('tgl_penjualan', '>=', $date1)
+
+                             ->whereDate('tgl_penjualan', '<=', $date2) ->first();
+
+
+
+                 $penjualan_noncash = hutang::select(DB::raw('SUM(sisa_hutang) as total_hutang'))
+
+                               ->where('id_toko',$id_toko)
+
+                               ->where('status',2)
+
+                               ->whereDate('tgl_hutang', '>=', $date1)
+
+                               ->whereDate('tgl_hutang', '<=', $date2) ->first();
+
+
+
+                 if($date2 == Carbon::now()->format('Y-m-d')){
+
+                        $hutang_dibayar_hari_ini = hutang_detail::select(DB::raw('SUM(bayar) as total_bayar_hari_ini'))
+
+                        ->where('id_toko',$id_toko)
+
+                        ->where('aktif','Y')
+
+                        ->whereDate('tgl_bayar', Carbon::now())->first();
+                    
+                 }else{
+                      $hutang_dibayar_hari_ini = '0';
+                 }
+
+                 
+                
+                    
+
+               
+
+             
+
+                         
 
 
 
@@ -239,7 +290,7 @@ class LaporanApiController extends Controller
                  ->whereDate('tgl_penjualan', '<=', $date2) ->count();
 
                             
-                $hutangtotal = hutang::select(DB::raw('SUM(hutang) as x'))
+                $hutangtotal = hutang::select(DB::raw('SUM(sisa_hutang) as x'))
 
                     ->where('id_toko',$id_toko)
 
@@ -300,14 +351,22 @@ class LaporanApiController extends Controller
 
                         'hutang'=> $hutang,
 
-                        'hutangtotal'=> $hutangtotal,
+                       // 'hutangtotal'=> $hutangtotal,
 
 
-                        // 'kas'    =>  $kas,
-
-                        // 'modal'    =>  $modal,
+                
 
                         'laba'    =>  $laba,
+
+                        'penjualan_cash' => $penjualan_cash,
+
+                        'penjualan_noncash' => $penjualan_noncash,
+
+                        'hutang_dibayar_hari_ini' => $hutang_dibayar_hari_ini,
+
+                      
+
+                       
 
                     ),
 
@@ -315,7 +374,7 @@ class LaporanApiController extends Controller
 
 
 
-                $pdf = PDF::loadView('laporan.api.laporanumum', compact('data'))->setPaper('potrait', 'landscape');
+                $pdf = PDF::loadView('laporan.api.laporanumum', compact('data'))->setPaper('A3','portrait');
 
                 return $pdf->stream('LAPORAN UMUM.pdf');
 
@@ -419,7 +478,7 @@ class LaporanApiController extends Controller
 
 
 
-                $pdf = PDF::loadView('laporan.api.laporanpenjualan', compact('data'))->setPaper('potrait', 'landscape');
+                $pdf = PDF::loadView('laporan.api.laporanpenjualan', compact('data'))->setPaper('A3','portrait');
 
                 return $pdf->stream('LAPORAN PENJUALAN.pdf');
 
@@ -519,7 +578,7 @@ class LaporanApiController extends Controller
 
 
 
-                $pdf = PDF::loadView('laporan.api.laporanbeban', compact('data'))->setPaper('potrait', 'landscape');
+                $pdf = PDF::loadView('laporan.api.laporanbeban', compact('data'))->setPaper('A3','portrait');
 
                 return $pdf->stream('LAPORAN BEBAN.pdf');
 
@@ -625,7 +684,7 @@ class LaporanApiController extends Controller
 
 
 
-                $pdf = PDF::loadView('laporan.api.laporanreversal', compact('data'))->setPaper('potrait', 'landscape');
+                $pdf = PDF::loadView('laporan.api.laporanreversal', compact('data'))->setPaper('A3','portrait');
 
                 return $pdf->stream('LAPORAN REVERSAL.pdf');
 

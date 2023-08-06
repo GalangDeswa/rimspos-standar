@@ -6,49 +6,26 @@
 
 <div>
 
-    <div class="row mb-3 align-self-center">
-        <div class="col-12">
-            <table>
-                <tr class="mr-2">
-
-                    @if($data->filter->toko->logo != '-')
-
-                    <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
-                            style="display: block;margin:-32px;" width="100%"
-                            src="data:image/png;base64,{{$data->filter->toko->logo}}" /></td>
-
-                    @else
-
-                    <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
-                            style="display: block;margin:-32px;" width="100%"
-                            src="{{asset('uploads/logo/default.png')}}" /></td>
-
-                    @endif
+    @if($data->filter->toko->logo != '-')
+    <div class="container text-center"><img class="text-center" width="20%"
+            src="data:image/png;base64,{{$data->filter->toko->logo}}" /></div>
 
 
 
-                    <td style="text-align:left;">{{ $data->filter->toko->nama_toko }}</td>
-
-                </tr>
-
-                <tr>
-
-                    <td style="text-align:left;">Alamat: {{ $data->filter->toko->alamat }}</td>
-
-                </tr>
-
-                <tr>
-
-                    <td style="text-align:left;">Email: {{ $data->filter->toko->email }}</td>
-
-                </tr>
-            </table>
-        </div>
-
+    @else
+    <div class="container text-center"><img class="text-center" width="20%"
+            src="{{ asset('uploads/logo/default.png')}}" />
     </div>
 
-    <h3 class="text-center">{{ $data->title }}</h3>
-    <h6 class="text-center">Tanggal reversal : {{ $data->filter->date }}</h6>
+
+    @endif
+    <h3 class="text-center">{{$data->filter->toko->nama_toko}}</h3>
+
+    <h6 class="text-center">{{$data->filter->toko->alamat}}</h6>
+    <br>
+    <h2 class="text-center">{{ $data->title }}</h2>
+    <h6 class="text-center">Reversal tanggal : {{
+        $data->filter->date }}</h6>
 
 
     <table class="table table-striped">

@@ -27,6 +27,8 @@ class hutangTransformer extends TransformerAbstract
         $respon["id_toko"] = $dtl->id_toko;
 
         $respon["hutang"] = $dtl->hutang;
+
+        $respon["sisa_hutang"] = $dtl->sisa_hutang;
         
         $respon["tgl_hutang"] = $dtl->tgl_hutang;
 

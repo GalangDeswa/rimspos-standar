@@ -274,9 +274,15 @@
 
             .page-break {
 
-                page-break-after: always;
+                page-break-after: auto !important;
 
             }
+
+            /* .table {
+                page-break-after: auto !important;
+                page-break-before: auto !important;
+                page-break-inside: auto !important;
+            }*/
         </style>
 
     </head>

@@ -553,6 +553,8 @@ public function hutang_local_to_database(Request $request){
 
                     $hutang = $request->hutang;
 
+                    $sisa_hutang = $request->sisa_hutang;
+
                     $tgl_hutang = $request->tgl_hutang;
 
                     $status = $request->status;
@@ -576,6 +578,9 @@ public function hutang_local_to_database(Request $request){
                     $data->id_toko = $id_toko;
                     $data->id_pelanggan = $id_pelanggan;
                     $data->hutang = $hutang;
+
+                    $data->sisa_hutang = $sisa_hutang;
+
                     $data->tgl_hutang = $tgl_hutang;
                     $data->status = $status;
                     $data->aktif = $aktif;
@@ -624,6 +629,9 @@ public function hutang_local_to_database(Request $request){
                     $data->id_toko = $id_toko;
                     $data->id_pelanggan = $id_pelanggan;
                     $data->hutang = $hutang;
+
+                    $data->sisa_hutang = $sisa_hutang;
+                    
                     $data->tgl_hutang = $tgl_hutang;
                     $data->status = $status;
                     $data->aktif = $aktif;

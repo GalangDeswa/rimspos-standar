@@ -136,7 +136,9 @@ class UserTokoApiController extends Controller
 
             }else{
 
-                $ktr = User::where('id_toko',$request->id_toko)->whereIn('role', ['1', '2'])->get();
+                $ktr = User::where('id_toko',$request->id_toko)->whereIn('role', ['1', '2'])
+                ->where('status',1)
+                ->get();
 
                 if($ktr){
 

@@ -6,198 +6,240 @@
 
 <div>
 
-    <div class="row mb-3 align-self-center">
-        <div class="col-12">
-            <table>
-                <tr class="mr-2">
-
-                    @if($data->filter->toko->logo != '-')
-
-                    <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
-                            style="display: block;margin:-32px;" width="100%"
-                            src="data:image/png;base64,{{$data->filter->toko->logo}}" /></td>
-
-                    @else
-
-                    <td rowspan="4" width="80px" style="text-align:center;vertical-align: middle;"><img
-                            style="display: block;margin:-32px;" width="100%"
-                            src="{{ asset('uploads/logo/default.png')}}" /></td>
-
-                    @endif
 
 
 
-                    <td style="text-align:left;">{{ $data->filter->toko->nama_toko }}</td>
 
-                </tr>
+    @if($data->filter->toko->logo != '-')
+    <div class="container text-center"><img class="text-center" width="20%"
+            src="data:image/png;base64,{{$data->filter->toko->logo}}" /></div>
 
-                <tr>
 
-                    <td style="text-align:left;">Alamat: {{ $data->filter->toko->alamat }}</td>
 
-                </tr>
+    @else
+    <div class="container text-center"><img class="text-center" width="20%"
+            src="{{ asset('uploads/logo/default.png')}}" /></div>
 
-                <tr>
 
-                    <td style="text-align:left;">Email: {{ $data->filter->toko->email }}</td>
+    @endif
+    <h3 class="text-center">{{$data->filter->toko->nama_toko}}</h3>
 
-                </tr>
-            </table>
-        </div>
-
-    </div>
-
-    <h3 class="text-center">{{ $data->title }}</h3>
+    <h6 class="text-center">{{$data->filter->toko->alamat}}</h6>
+    <br>
+    <h2 class="text-center">{{ $data->title }}</h2>
     <h6 class="text-center">Laporan tanggal : {{
         $data->filter->date }}</h6>
 
 
+    <div>
+        <table class="table table-striped">
 
-    <table class="table table-striped">
 
-        <thead style="background-color: rgb(10, 94, 191)">
+            <thead style="background-color: rgb(10, 94, 191)">
 
-            <tr>
-                <th scope="col" style="color: white">NO</th>
-                <th scope="col" style="color: white">KETERANGAN</th>
-                <th scope="col" class="text-right" style="color: white">JUMLAH</th>
+                <tr>
+                    <th scope="col" style="color: white">NO</th>
+                    <th scope="col" style="color: white">KETERANGAN</th>
+                    <th scope="col" class="text-right" style="color: white">JUMLAH</th>
 
-            </tr>
+                </tr>
 
-            @php
+                @php
 
-            if($data->hasil->penjualan){
+                if($data->hasil->penjualan){
 
-            $penjualan = $data->hasil->penjualan->total;
+                $penjualan = $data->hasil->penjualan->total;
 
-            }else{
+                }else{
 
-            $penjualan = '0';
+                $penjualan = '0';
 
-            }
+                }
 
 
 
-            if($data->hasil->beban){
+                if($data->hasil->beban){
 
-            $beban = $data->hasil->beban->jumlah;
+                $beban = $data->hasil->beban->jumlah;
 
-            }else{
+                }else{
 
-            $beban = '0';
+                $beban = '0';
 
-            }
+                }
 
-            if($data->hasil->transaksi){
+                if($data->hasil->transaksi){
 
-            $transaksi = $data->hasil->transaksi;
+                $transaksi = $data->hasil->transaksi;
 
-            }else{
+                }else{
 
-            $transaksi = '0';
+                $transaksi = '0';
 
-            }
+                }
 
-            if($data->hasil->hutang){
+                if($data->hasil->hutang){
 
-            $hutang = $data->hasil->hutang;
+                $hutang = $data->hasil->hutang;
 
-            }else{
+                }else{
 
-            $hutang = '0';
+                $hutang = '0';
 
-            }
+                }
 
 
-            if($data->hasil->hutangtotal){
+                // if($data->hasil->hutangtotal){
 
-            $hutangtotal = $data->hasil->hutangtotal->x;
+                // $hutangtotal = $data->hasil->hutangtotal->x;
 
-            }else{
+                // }else{
 
-            $hutangtotal = '0';
+                // $hutangtotal = '0';
 
-            }
+                // }
 
 
 
+                if($data->hasil->penjualan_cash){
 
+                $penjualan_cash = $data->hasil->penjualan_cash->total_cash;
 
+                }else{
 
+                $penjualan_cash = '0';
 
-            // if($data->hasil->modal){
+                }
 
-            // $modal = $data->hasil->modal->modal;
 
-            // }else{
+                if($data->hasil->penjualan_noncash){
 
-            // $modal = '0';
+                $penjualan_noncash = $data->hasil->penjualan_noncash->total_hutang;
 
-            // }
+                }else{
 
+                $penjualan_noncash = '0';
 
+                }
 
-            // if($data->hasil->laba){
 
-            // $laba = $data->hasil->laba;
+                if($data->hasil->hutang_dibayar_hari_ini){
 
-            // }else{
+                $hutang_dibayar_hari_ini = $data->hasil->hutang_dibayar_hari_ini->total_bayar_hari_ini;
 
-            // $laba = '0';
+                }else{
 
-            // }
+                $hutang_dibayar_hari_ini = '0';
 
-            @endphp
-        </thead>
-        <tbody>
+                }
 
-            <tr class="item">
 
-                <td align="left" colspan="2">Penjualan Total</td>
 
-                <td style="text-align: right;">{{'Rp. '.number_format($penjualan)}}</td>
 
-            </tr>
 
-            <tr class="item">
 
-                <td align="left" colspan="2">Beban Total</td>
 
-                <td style="text-align: right;">{{'Rp. '.number_format($beban)}}</td>
+                // if($data->hasil->modal){
 
-            </tr>
-            <tr class="item">
+                // $modal = $data->hasil->modal->modal;
 
-                <td align="left" colspan="2">Transaksi Total</td>
+                // }else{
 
-                <td style="text-align: right;">{{number_format($transaksi)}}</td>
+                // $modal = '0';
 
-            </tr>
-            <tr class="item">
+                // }
 
-                <td align="left" colspan="2">Transaksi hutang</td>
 
-                <td style="text-align: right;">{{number_format($hutang)}}</td>
 
-            </tr>
-            <tr class="item">
+                // if($data->hasil->laba){
 
-                <td align="left" colspan="2">Hutang total</td>
+                // $laba = $data->hasil->laba;
 
-                <td style="text-align: right;">{{'Rp. '.number_format($hutangtotal)}}</td>
+                // }else{
 
-            </tr>
-            <tr class="item">
+                // $laba = '0';
 
-                <td align="left" colspan="2">Pendapatan Total</td>
+                // }
 
-                <td style="text-align: right;">{{'Rp. '.number_format($penjualan-$beban-$hutangtotal)}}</td>
+                @endphp
+            </thead>
+            <tbody>
 
-            </tr>
+                {{-- <tr class="item">
 
-        </tbody>
-    </table>
+                    <td align="left" colspan="2">Total Penjualan</td>
 
+                    <td style="text-align: right;">{{'Rp. '.number_format($penjualan)}}</td>
+
+                </tr> --}}
+
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Transaksi</td>
+
+                    <td style="text-align: right;">{{number_format($transaksi)}}</td>
+
+                </tr>
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Transaksi Hutang</td>
+
+                    <td style="text-align: right;">{{number_format($hutang)}}</td>
+
+                </tr>
+
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Penjualan Lunas</td>
+
+                    <td style="text-align: right;">{{'Rp. '.number_format($penjualan_cash)}}</td>
+
+                </tr>
+
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Penjualan Belum Lunas</td>
+
+                    <td style="text-align: right;">{{'Rp. '.number_format($penjualan_noncash)}}</td>
+
+                </tr>
+
+
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Hutang yang Dibayar Hari Ini</td>
+
+                    <td style="text-align: right;">{{'Rp. '.number_format($hutang_dibayar_hari_ini)}}</td>
+
+                </tr>
+
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Beban</td>
+
+                    <td style="text-align: right;">{{'Rp. '.number_format($beban)}}</td>
+
+                </tr>
+
+                {{-- <tr class="item">
+
+                    <td align="left" colspan="2">Total Hutang</td>
+
+                    <td style="text-align: right;">{{'Rp. '.number_format($hutangtotal)}}</td>
+
+                </tr> --}}
+                <tr class="item">
+
+                    <td align="left" colspan="2">Total Pendapatan</td>
+
+                    <td style="text-align: right;">{{'Rp.
+                        '.number_format($penjualan_cash-$penjualan_noncash+$hutang_dibayar_hari_ini)}}</td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @endsection
