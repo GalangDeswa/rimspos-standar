@@ -908,6 +908,7 @@ class PenjualanApiController extends Controller
         $metode_bayar= $request->metode_bayar;
         $status= $request->status;
         $aktif = $request->aktif;
+        $diskon_kasir = $request->diskon_kasir;
 
 
 
@@ -936,6 +937,7 @@ class PenjualanApiController extends Controller
         $data->metode_bayar = $metode_bayar;
         $data->status = $status;
         $data->aktif = $aktif;
+        $data->diskon_kasir = $diskon_kasir;
 
 
     if($data->save()){
@@ -993,6 +995,7 @@ class PenjualanApiController extends Controller
          $data->metode_bayar = $metode_bayar;
          $data->status = $status;
          $data->aktif = $aktif;
+         $data->diskon_kasir = $diskon_kasir;
 
     if($data->save()){
 

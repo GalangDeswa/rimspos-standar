@@ -17,7 +17,7 @@ class penjualanTransformerV2 extends TransformerAbstract
 
     {
         $response['id'] = $dtl->id;
-        $respon["id_local"] = $dtl->id_local;
+        $response["id_local"] = $dtl->id_local;
         $response['id_user'] = $dtl->id_user;
         $response['id_penjualan'] = $dtl->id_penjualan;
         $response['id_produk'] = $dtl->id_produk;

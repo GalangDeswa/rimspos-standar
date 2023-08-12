@@ -283,7 +283,7 @@ class LaporanApiController extends Controller
 
                  where('id_toko',$id_toko)
 
-                 ->where('status',3)
+                 ->where('status',2)
 
                  ->whereDate('tgl_penjualan', '>=', $date1)
 
