@@ -36,10 +36,11 @@
             <tr>
                 <th scope="col" style="color: white">NO</th>
                 <th scope="col" style="color: white">NAMA BARANG</th>
+                <th scope="col" style="color: white">HARGA</th>
                 <th scope="col" style="color: white">QTY</th>
                 <th scope="col" style="color: white">DISKON</th>
 
-                <th scope="col" class="text-right" style="color: white">TOTAL</th>
+                <th scope="col" class="text-right" style="color: white">SUBTOTAL</th>
 
             </tr>
 
@@ -71,6 +72,8 @@
                 <td align="center">{{ $no++ }}</td>
 
                 <td align="left">{{$itemdetail->nama_brg}}</td>
+                
+                <td align="left">{{'Rp. '. number_format($itemdetail->harga_brg) }}</td>
 
                 <td align="center">{{$itemdetail->qty}}</td>
 
@@ -100,9 +103,9 @@
 
             <tr class="item">
 
-                <td align="right" colspan="4">Total</td>
+                <td align="right" style="font-weight: 500;" colspan="5">Total</td>
 
-                <td style="text-align: right;">{{'Rp. '.number_format($totalSum)}}</td>
+                <td style="text-align: right; font-weight: 500;">{{'Rp. '.number_format($totalSum)}}</td>
 
             </tr>
 
