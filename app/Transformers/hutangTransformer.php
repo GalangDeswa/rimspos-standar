@@ -18,6 +18,7 @@ class hutangTransformer extends TransformerAbstract
     public function transform($dtl)
     {
         $respon["id"] = $dtl->id;
+        
         $respon["id_local"] = $dtl->id_local;
 
         $respon["id_pelanggan"] = $dtl->id_pelanggan;
@@ -32,9 +33,9 @@ class hutangTransformer extends TransformerAbstract
         
         $respon["tgl_hutang"] = $dtl->tgl_hutang;
 
-         $respon["status"] = $dtl->status;
+        $respon["status"] = $dtl->status;
 
-         $respon["aktif"] = $dtl->aktif;
+        $respon["aktif"] = $dtl->aktif;
 
          return $respon;
 

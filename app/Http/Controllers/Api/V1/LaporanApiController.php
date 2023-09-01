@@ -196,13 +196,15 @@ class LaporanApiController extends Controller
 
                             ->where('id_toko',$id_toko)
 
-                            ->whereIn('status',[1,2])
+                            ->where('status',1)
 
                          //   ->whereIn('metode_bayar',['0','1','2'])
 
                             ->whereDate('tgl_penjualan', '>=', $date1)
 
                             ->whereDate('tgl_penjualan', '<=', $date2)
+                            
+                            ->where('aktif', 'Y')
 
                             ->first();
                             
@@ -211,9 +213,11 @@ class LaporanApiController extends Controller
 
                              ->where('id_toko',$id_toko)
 
-                             ->whereIn('status',[1,2])
+                             ->where('status',1)
 
                              ->whereDate('tgl_penjualan', '>=', $date1)
+                             
+                             ->where('aktif', 'Y')
 
                              ->whereDate('tgl_penjualan', '<=', $date2) ->first();
 
@@ -226,6 +230,8 @@ class LaporanApiController extends Controller
                                ->where('status',2)
 
                                ->whereDate('tgl_hutang', '>=', $date1)
+                               
+                               ->where('aktif', 'Y')
 
                                ->whereDate('tgl_hutang', '<=', $date2) ->first();
 
@@ -264,6 +270,8 @@ class LaporanApiController extends Controller
                             ->whereDate('tgl', '>=', $date1)
 
                             ->whereDate('tgl', '<=', $date2)
+                            
+                            ->where('aktif', 'Y')
 
                             ->first();
 
@@ -272,9 +280,9 @@ class LaporanApiController extends Controller
 
                             where('id_toko',$id_toko)
 
-                         
-
                             ->whereDate('tgl_penjualan', '>=', $date1)
+                            
+                            ->where('aktif', 'Y')
 
                             ->whereDate('tgl_penjualan', '<=', $date2) ->count();
 
@@ -286,6 +294,8 @@ class LaporanApiController extends Controller
                  ->where('status',2)
 
                  ->whereDate('tgl_penjualan', '>=', $date1)
+                 
+                 ->where('aktif', 'Y')
 
                  ->whereDate('tgl_penjualan', '<=', $date2) ->count();
 
@@ -295,8 +305,11 @@ class LaporanApiController extends Controller
                     ->where('id_toko',$id_toko)
 
                     ->where('status', 2)
+                    
+                    ->where('aktif', 'Y')
 
                     ->whereDate('tgl_hutang', '>=', $date1)
+                    
 
                     ->whereDate('tgl_hutang', '<=', $date2) ->first();
 
@@ -440,13 +453,15 @@ class LaporanApiController extends Controller
 
                 $penjualan = Penjualan::where('id_toko',$id_toko)
 
-                            ->whereIn('status',[1,2])
+                            ->where('status',1)
 
                             //->whereIn('metode_bayar',['0','1','2'])
 
                             ->whereDate('tgl_penjualan', '>=', $date1)
 
                             ->whereDate('tgl_penjualan', '<=', $date2)
+                            
+                            ->where('aktif', 'Y')
 
                             ->with('detail')
 
@@ -547,6 +562,8 @@ class LaporanApiController extends Controller
                             ->whereDate('tgl', '>=', $date1)
 
                             ->whereDate('tgl', '<=', $date2)
+                            
+                            ->where('aktif', 'Y')
 
                             ->with('kategoribeban','kasir')
 
@@ -646,11 +663,13 @@ class LaporanApiController extends Controller
 
                             ->where('status',4)
 
-                            ->whereIn('metode_bayar',['0','1','2'])
+                            //->whereIn('metode_bayar',['0','1','2'])
 
                             ->whereDate('tgl_penjualan', '>=', $date1)
 
                             ->whereDate('tgl_penjualan', '<=', $date2)
+                            
+                            //->where('aktif', 'N')
 
                             ->with('detail')
 

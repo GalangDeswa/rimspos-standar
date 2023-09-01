@@ -233,7 +233,7 @@
                     <td align="left" colspan="2">Total Pendapatan</td>
 
                     <td style="text-align: right;">{{'Rp.
-                        '.number_format($penjualan_cash-$penjualan_noncash+$hutang_dibayar_hari_ini)}}</td>
+                        '.number_format($penjualan_cash-$penjualan_noncash)}}</td>
 
                 </tr>
 

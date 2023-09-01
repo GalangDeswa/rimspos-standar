@@ -97,6 +97,8 @@ class PenjualanTransformer extends TransformerAbstract
         $respon["aktif"] = $dtl->aktif;
         
         $respon["diskon_kasir"] = $dtl->diskon_kasir;
+        
+        $respon["ppn"] = $dtl->ppn;
 
 
 

@@ -909,6 +909,7 @@ class PenjualanApiController extends Controller
         $status= $request->status;
         $aktif = $request->aktif;
         $diskon_kasir = $request->diskon_kasir;
+        $ppn = $request->ppn;
 
 
 
@@ -938,6 +939,7 @@ class PenjualanApiController extends Controller
         $data->status = $status;
         $data->aktif = $aktif;
         $data->diskon_kasir = $diskon_kasir;
+        $data->ppn = $ppn;
 
 
     if($data->save()){
@@ -996,6 +998,7 @@ class PenjualanApiController extends Controller
          $data->status = $status;
          $data->aktif = $aktif;
          $data->diskon_kasir = $diskon_kasir;
+         $data->ppn = $ppn;
 
     if($data->save()){
 
